@@ -1,0 +1,14 @@
+title: "Gitcuka"
+description: "Official gitcuka"
+author: "gitcuka"
+baseurl: "" 
+url: "https://gitcuka.github.io"
+markdown: kramdown
+theme: null
+
+timezone: Asia/Jakarta
+
+plugins:
+  - jekyll-seo-tag
+  - jekyll-sitemap
+  - jekyll-feed
