@@ -4,11 +4,11 @@ title: Home
 ---
 
 <div class="gridGitcuka">
-  {% for post in site.posts %}
+  {% for gitcukapost in site.posts %}
     <div class="cardGitcuka">
-      <h3><a href="{{ post.url | relative_url }}">{{ post.title }}</a></h3>
-      <p><small>{{ post.date | date: "%d %B %Y" }}</small></p>
-      <p>{{ post.excerpt | strip_html | truncate: 100 }}</p>
+      <h3><a href="{{ gitcukapost.url | relative_url }}">{{ gitcukapost.title }}</a></h3>
+      <p><small>{{ gitcukapost.date | date: "%d %B %Y" }}</small></p>
+      <p>{{ gitcukapost.excerpt | strip_html | truncate: 100 }}</p>
       <p><a href="{{ post.url | relative_url }}">Baca selengkapnya →</a></p>
     </div>
   {% endfor %}
