@@ -92,6 +92,26 @@ article {
   border-radius: 12px;
 }
 
+/* Search sidebar */
+#searchInput {
+  width: 100%;
+  padding: 0.5rem;
+  margin-bottom: 0.7rem;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+
+#searchResults {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+#searchResults li {
+  margin-bottom: 0.4rem;
+  font-size: 0.95rem;
+}
+
 /* Footer */
 footer {
   text-align: center;
