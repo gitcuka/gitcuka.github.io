@@ -106,3 +106,29 @@ footer {
     grid-template-columns: 1fr;
   }
 }
+
+/* Post layout */
+.postGitcuka {
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+.post-title {
+  font-size: 2rem;
+  margin-bottom: 0.4rem;
+}
+
+.post-meta {
+  color: #666;
+  font-size: 0.9rem;
+  margin-bottom: 2rem;
+}
+
+.post-content p {
+  margin-bottom: 1.2rem;
+}
+
+.post-content img {
+  max-width: 100%;
+  border-radius: 8px;
+}
