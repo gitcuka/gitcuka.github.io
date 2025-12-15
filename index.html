@@ -3,12 +3,26 @@ layout: gitcuka
 title: Home
 ---
 
-<article>
-  <h2>Judul Artikel Pertama</h2>
-  <p>Ini contoh isi artikel blog.</p>
-</article>
+{% if site.posts.size > 0 %}
+  {% for post in site.posts %}
+    <article>
+      <h2>
+        <a href="{{ post.url | relative_url }}">
+          {{ post.title }}
+        </a>
+      </h2>
 
-<article>
-  <h2>Judul Artikel Kedua</h2>
-  <p>Menu kiri bisa ditutup tanpa refresh.</p>
-</article>
+      <small>
+        {{ post.date | date: "%d %B %Y" }}
+      </small>
+
+      <p>
+        {{ post.excerpt | strip_html | truncate: 150 }}
+      </p>
+
+      <a href="{{ post.url | relative_url }}">Read more →</a>
+    </article>
+  {% endfor %}
+{% else %}
+  <p>Belum ada postingan.</p>
+{% endif %}
