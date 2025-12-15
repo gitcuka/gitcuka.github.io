@@ -1,0 +1,26 @@
+<!-- CHAT TOGGLE BUTTON -->
+<div id="chat-toggle">💬</div>
+
+<!-- CHAT BOX -->
+<div id="chat-container" class="hidden">
+
+  <div class="chat-header">
+    <span>Live Chat</span>
+    <button id="chat-close">✕</button>
+  </div>
+
+  <div id="room-selection">
+    <button data-room="all" class="active">All</button>
+    <button data-room="litmatch">Litmatch</button>
+    <button data-room="game">Game</button>
+  </div>
+
+  <ul id="messages"></ul>
+
+  <form id="message-form">
+    <input type="text" id="username-input" placeholder="Your name" required>
+    <input type="text" id="message-input" placeholder="Type message..." required>
+    <button type="submit">Send</button>
+  </form>
+
+</div>
