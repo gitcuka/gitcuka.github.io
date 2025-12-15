@@ -53,7 +53,15 @@
       <h3>Sidebar</h3>
       <ul>
         <li><a href="#">Kategori</a></li>
-        <li><a href="#">Arsip</a></li>
+        <h3>Arsip</h3>
+<ul>
+{% assign postsByMonth = site.posts | group_by_exp:"post","post.date | date: '%B %Y'" %}
+{% for month in postsByMonth %}
+  <li>
+    {{ month.name }} ({{ month.items.size }})
+  </li>
+{% endfor %}
+</ul>
         <li><a href="#">Popular Post</a></li>
       </ul>
     </aside>
