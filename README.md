@@ -2,10 +2,13 @@
 
 Official gitcuka. Warning: Do not impersonate gitcuka, as this is the only official gitcuka. gitcuka was built on 12/15/2025
 
-## ⚠️ License Notice
+## ⚠️ Ownership & License
 
-This project is NOT open source.
+GitCuka is a proprietary project.
 
-All rights are reserved by the author.
-Any use, copying, modification, or redistribution without
-explicit written permission is strictly prohibited.
+The name "GitCuka" and all associated branding, source code,
+designs, and content are the exclusive property of
+GitCuka.
+
+No usage, redistribution, or modification is permitted
+without explicit written permission.
