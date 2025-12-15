@@ -40,7 +40,7 @@
 </head>
 
 <body>
-
+{% include livechat.html %}
 {% include sidebar-left.html %}
 
 <header class="site-header">
@@ -125,5 +125,251 @@ searchInput.addEventListener("input", function () {
 
 </script>
 
+  <script>
+document.addEventListener("DOMContentLoaded", () => {
+  const toggle = document.getElementById("chat-toggle");
+  const chat = document.getElementById("chat-container");
+  const close = document.getElementById("chat-close");
+chat.style.display = "none";
+  toggle.onclick = () => {
+    chat.style.display = "flex";
+    toggle.style.display = "none";
+  };
+
+  close.onclick = () => {
+    chat.style.display = "none";
+    toggle.style.display = "flex";
+  };
+});
+  </script>
+
+<script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
+        
+        // GANTI DENGAN KONFIGURASI PROYEK ANDA!
+        const firebaseConfig = {
+    apiKey: "AIzaSyAaB1oF3JLV2macQrMJzmJhTl53dyUqCWM",
+    authDomain: "gitcuka-chat.firebaseapp.com",
+    projectId: "gitcuka-chat",
+    storageBucket: "gitcuka-chat.firebasestorage.app",
+    messagingSenderId: "443390519338",
+    appId: "1:443390519338:web:39eb50d75e7f01284fbb53",
+    measurementId: "G-QTDQE3DKY1"
+  };
+
+        // Inisialisasi Firebase dan membuatnya tersedia secara global
+        const app = initializeApp(firebaseConfig);
+        window.firebaseApp = app; 
+
+  // --- Import Fungsi Firestore yang Dibutuhkan ---
+import { 
+    getFirestore, 
+    collection, 
+    addDoc, 
+    onSnapshot, 
+    query, 
+    orderBy, 
+    serverTimestamp,
+    limit,
+    where,
+    getDocs,
+    writeBatch
+} from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
+
+// --- KONSTANTA & VARIABEL GLOBAL ---
+const MAX_MESSAGES = 2; // Batas pesan yang disimpan per room
+let currentRoomId = 'all'; // Room default saat start
+let unsubscribeListener; // Fungsi untuk menghentikan listener real-time
+
+// --- Inisialisasi Firebase & Firestore ---
+const app = window.firebaseApp; 
+if (!app) {
+    console.error("Firebase App belum diinisialisasi.");
+    throw new Error("Firebase App is not initialized."); 
+}
+
+const db = getFirestore(app); 
+const chatsCol = collection(db, 'chats'); 
+
+// Elemen DOM
+const messageForm = document.getElementById('message-form');
+const usernameInput = document.getElementById('username-input');
+const messageInput = document.getElementById('message-input');
+const messagesList = document.getElementById('messages');
+const roomButtons = document.querySelectorAll('#room-selection button');
+
+
+// --- Fungsi Pembantu: Membuat Elemen Pesan ---
+function createMessageElement(data) {
+    const messageElement = document.createElement('li');
+    let timeString = '';
+    
+    // Format Tanggal dan Waktu
+    if (data.timestamp && data.timestamp.toDate) {
+        const date = data.timestamp.toDate();
+        const options = {
+            year: 'numeric', 
+            month: 'short', 
+            day: '2-digit', 
+            hour: '2-digit', 
+            minute: '2-digit'
+        };
+        timeString = date.toLocaleDateString('id-ID', options);
+    } else {
+        timeString = 'Baru saja dikirim...'; 
+    }
+
+    messageElement.innerHTML = `
+        <div class="message-content">
+            <small class="message-time">${timeString}</small>
+            <strong>${data.username}</strong>: ${data.text}
+        </div>
+    `;
+
+    // Asumsi: Semua pesan adalah 'message-other' karena tidak ada Authentication
+    // Jika Anda ingin mengimplementasikan self vs other, Anda perlu menyimpan ID pengguna
+    // dan membandingkannya di sini.
+    messageElement.classList.add('message-other'); 
+    
+    return messageElement;
+}
+
+// --- Fungsi 1: Cleanup Pesan Terlama ---
+async function cleanupOldMessages(roomId) {
+    try {
+        const cleanupQuery = query(
+            chatsCol, 
+            where('roomId', '==', roomId), // Hapus hanya di room ini
+            orderBy('timestamp', 'asc'), 
+            limit(MAX_MESSAGES + 5) 
+        );
+
+        const snapshot = await getDocs(cleanupQuery);
+        const totalMessages = snapshot.size;
+
+        if (totalMessages > MAX_MESSAGES) {
+            const countToDelete = totalMessages - MAX_MESSAGES;
+            console.log(`[Room ${roomId}] Batas terlampaui. Menghapus ${countToDelete} pesan terlama.`);
+            
+            const batch = writeBatch(db);
+            
+            for (let i = 0; i < countToDelete; i++) {
+                const docToDelete = snapshot.docs[i];
+                batch.delete(docToDelete.ref);
+            }
+            
+            await batch.commit();
+            console.log(`${countToDelete} pesan berhasil dihapus dari room ${roomId}.`);
+        }
+    } catch (error) {
+        console.error("Gagal menjalankan cleanup pesan terlama:", error);
+    }
+}
+
+
+// --- Fungsi 2: Mengatur Ulang Listener (Room Selector) ---
+function setupChatListener(roomId) {
+    // 1. Hentikan listener yang aktif sebelumnya
+    if (unsubscribeListener) {
+        unsubscribeListener();
+    }
+    
+    // 2. Kosongkan tampilan chat
+    messagesList.innerHTML = ''; 
+
+    // 3. Buat query BARU yang difilter
+    const q = query(
+        chatsCol, 
+        where('roomId', '==', roomId), // Filter berdasarkan Room ID
+        orderBy('timestamp', 'asc'), 
+        limit(MAX_MESSAGES) // Tampilkan hanya MAX_MESSAGES terakhir
+    );
+    
+    // 4. Mulai listener baru
+    unsubscribeListener = onSnapshot(q, (snapshot) => {
+        snapshot.docChanges().forEach((change) => {
+            const docId = change.doc.id;
+            const messageData = change.doc.data();
+            let existingLi = document.getElementById(docId);
+
+            if (change.type === 'added') {
+                const messageElement = createMessageElement(messageData);
+                messageElement.id = docId; 
+                messagesList.appendChild(messageElement);
+                
+            } else if (change.type === 'modified' && existingLi) {
+                // Update elemen ketika timestamp selesai
+                const updatedElement = createMessageElement(messageData);
+                existingLi.innerHTML = updatedElement.innerHTML; 
+                
+            } else if (change.type === 'removed' && existingLi) {
+                // Hapus elemen yang dihapus oleh fungsi cleanup
+                existingLi.remove();
+            }
+        });
+
+        // Gulir ke bawah
+        messagesList.scrollTop = messagesList.scrollHeight;
+    }, (error) => {
+        console.error("Error mendengarkan snapshot Firestore:", error.code, error.message);
+        // Tampilkan peringatan jika terjadi error izin
+        alert(`Gagal mengambil pesan di room ${roomId}. Pastikan Anda membuat index Firestore yang diperlukan!`);
+    });
+}
+
+
+// --- Fungsi 3: Mengirim Pesan (POST) ---
+messageForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const username = usernameInput.value.trim();
+    const message = messageInput.value.trim();
+
+    if (username && message) {
+        const newMessage = {
+            username: username,
+            text: message,
+            timestamp: serverTimestamp(),
+            roomId: currentRoomId, // Kirim ke room yang sedang aktif
+        };
+
+        try {
+            await addDoc(chatsCol, newMessage);
+            messageInput.value = ''; 
+            
+            // Lakukan cleanup setelah pesan berhasil terkirim
+            await cleanupOldMessages(currentRoomId);
+
+        } catch (error) {
+            console.error("Error mengirim pesan:", error);
+            alert("Gagal mengirim pesan. Cek koneksi atau aturan keamanan.");
+        }
+    }
+});
+
+
+// --- Fungsi 4: Logika Pergantian Room ---
+roomButtons.forEach(button => {
+    button.addEventListener('click', (e) => {
+        const newRoomId = e.target.dataset.room;
+        
+        // Update tampilan tombol
+        roomButtons.forEach(btn => btn.classList.remove('active'));
+        e.target.classList.add('active');
+        
+        // Perbarui global dan ganti listener
+        currentRoomId = newRoomId;
+        setupChatListener(currentRoomId);
+        
+        console.log(`Pindah ke room: ${currentRoomId}`);
+    });
+});
+
+
+// --- Panggil saat Halaman Pertama Kali Dimuat ---
+setupChatListener(currentRoomId);
+
+</script>
+  
 </body>
 </html>
