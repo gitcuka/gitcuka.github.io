@@ -3,13 +3,12 @@ layout: gitcuka
 title: Home
 ---
 
-<div class="gridGitcuka">
-  {% for gitcukapost in site.posts %}
-    <div class="cardGitcuka">
-      <h3><a href="{{ gitcukapost.url | relative_url }}">{{ gitcukapost.title }}</a></h3>
-      <p><small>{{ gitcukapost.date | date: "%d %B %Y" }}</small></p>
-      <p>{{ gitcukapost.excerpt | strip_html | truncate: 100 }}</p>
-      <p><a href="{{ gitcukapost.url | relative_url }}">More...</a></p>
-    </div>
-  {% endfor %}
-</div>
+<article>
+  <h2>Judul Artikel Pertama</h2>
+  <p>Ini contoh isi artikel blog.</p>
+</article>
+
+<article>
+  <h2>Judul Artikel Kedua</h2>
+  <p>Menu kiri bisa ditutup tanpa refresh.</p>
+</article>
