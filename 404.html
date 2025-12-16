@@ -2,7 +2,60 @@
 layout: gitcuka
 title: 404 - Page Not Found
 ---
+<style>
+  /* =====================
+   404 PAGE STYLE
+   ===================== */
+.error-404 {
+  text-align: center;
+  padding: 4rem 1rem;
+}
 
+.error-404 h1 {
+  font-size: 6rem;
+  margin: 0;
+  color: #4fc3f7;
+}
+
+.error-404 h2 {
+  margin-top: 0.5rem;
+  font-size: 1.8rem;
+}
+
+.error-404 p {
+  color: #555;
+  margin: 1rem 0 2rem;
+}
+
+.error-actions {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.error-actions a {
+  padding: 0.6rem 1.2rem;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.btn-home {
+  background: #4fc3f7;
+  color: #000;
+}
+
+.btn-search {
+  background: #111;
+  color: #fff;
+}
+
+.btn-home:hover,
+.btn-search:hover {
+  opacity: 0.85;
+}
+</style>
 <div class="error-404">
   <h1>404</h1>
   <h2>Halaman Tidak Ditemukan</h2>
@@ -12,6 +65,5 @@ title: 404 - Page Not Found
 
   <div class="error-actions">
     <a href="{{ '/' | relative_url }}" class="btn-home">🏠 Kembali ke Home</a>
-    <a href="{{ '/search' | relative_url }}" class="btn-search">🔍 Cari Artikel</a>
   </div>
 </div>
