@@ -153,6 +153,23 @@ footer {
   border-radius: 8px;
 }
 
+/* Link normal */
+a {
+  color: #000;           /* warna teks normal */
+  text-decoration: none; /* hilangkan garis bawah */
+}
+
+/* Link yang sudah dikunjungi */
+a:visited {
+  color: #000;           /* samakan warna */
+}
+
+/* Hover */
+a:hover {
+  color: #0077cc;
+  text-decoration: none;
+}
+
 /* TOGGLE BUTTON */
 #chat-toggle {
   position: fixed;
