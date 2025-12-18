@@ -3,22 +3,12 @@ layout: gitcuka
 title: Home
 ---
 
-{% if site.posts.size > 0 %}
-  {% for post in site.posts %}
-    <a href="{{ post.url | relative_url }}" class="post-card">
-      <article>
-        <h2>{{ post.title }}</h2>
-
-        <small>
-          {{ post.date | date: "%d %B %Y" }}
-        </small>
-
-        {% if post.description %}
-          <p>{{ post.description | truncate: 160 }}</p>
-        {% endif %}
-      </article>
-    </a>
-  {% endfor %}
-{% else %}
-  <p>Belum ada postingan.</p>
-{% endif %}
+{% for post in site.posts %}
+<a href="{{ post.url | relative_url }}" class="post-card">
+  <article>
+    <h2>{{ post.title }}</h2>
+    <small>{{ post.date | date: "%d %B %Y" }}</small>
+    <p>{{ post.description }}</p>
+  </article>
+</a>
+{% endfor %}
