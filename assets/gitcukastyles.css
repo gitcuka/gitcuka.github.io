@@ -135,39 +135,20 @@ footer {
 
 .post-title {
   font-size: 2rem;
-  margin-bottom: 0.4rem;
 }
 
 .post-meta {
   color: #666;
   font-size: 0.9rem;
-  margin-bottom: 2rem;
 }
 
 .post-content p {
-  margin-bottom: 1.2rem;
+  text-decoration: none;
 }
 
 .post-content img {
   width: 100%;
   border-radius: 8px;
-}
-
-/* Link normal */
-a {
-  color: #000;           /* warna teks normal */
-  text-decoration: none; /* hilangkan garis bawah */
-}
-
-/* Link yang sudah dikunjungi */
-a:visited {
-  color: #000;           /* samakan warna */
-}
-
-/* Hover */
-a:hover {
-  color: #0077cc;
-  text-decoration: none;
 }
 
 /* TOGGLE BUTTON */
